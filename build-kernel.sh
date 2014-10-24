@@ -2,7 +2,7 @@
 set -x 
 
 BUILD_OUTPUT=${1:?"PARAMETER MISSING: You have to specify a build directory"}
-KERNEL_SOURCE=${2:?"PARAMETER MISSING: You have to specify a kernel sources directory}
+KERNEL_SOURCE=${2:?"PARAMETER MISSING: You have to specify a kernel sources directory"}
 if [[ ! -e ${SOURCE}/arch/arm/configs/a3_abontouch_defconfig ]]; then
 	echo "${SOURCE}/arch/arm/configs/a3_abontouch_defconfig file could not be found"
 	exit 1;

@@ -47,7 +47,7 @@ debootstrap \
 
 install /usr/bin/qemu-arm-static ${BOOTSTRAP_ROOTFS}/usr/bin
 
-$( nohup bash -c "bash build-kernel.sh" ${BOOTSTRAP_KERNEL} ${KERNEL_SOURCES}  1>&2 /dev/null ) & 
+$( nohup bash -c "bash build-kernel.sh ${BOOTSTRAP_KERNEL} ${KERNEL_SOURCES}"  1>&2 /dev/null ) & 
 
 chroot ${BOOTSTRAP_ROOTFS} /bin/bash -c "/debootstrap/debootstrap --second-stage"
 
