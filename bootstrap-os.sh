@@ -25,7 +25,7 @@ losetup -D
 
 dd if=/dev/zero of=/tmp/tempfs.img bs=1M count=2000
 losetup -f /tmp/tempfs.img
-mkfs.ext4 /dev/loop0 
+mkfs.ext3 /dev/loop0 
 mount -t ext3 -o defaults,noatime /dev/loop0 ${BOOTSTRAP_ROOTFS}
 
 
@@ -109,19 +109,24 @@ cd /dev
 MAKEDEV generic
 
 apt-get -y update 
-apt-get --no-install-recommends -y --quiet install grub2 lxpanel openbox xinit xserver-xorg-core xserver-xorg-input-all udevil
+apt-get --no-install-recommends -y --quiet install grub2 lxpanel openbox xinit xserver-xorg xserver-xorg-input-all xserver-xorg udevil
 apt-get --no-install-recommends -y --quiet install  cups-filters feh libcupsimage2  netplug ppp udevil usb-modeswitch usbutils gsoap libcos4-1 libcups2 libglib2.0-0 libomniorb4-1 libowcapi-2.8-15 libpng12-0 libsdl2-mixer-2.0-0 libsigc++-2.0-0c2a libudev1 libusb-1.0-0 libuuid1 libwebkit2gtk-3.0-25 libxerces-c3.1 libxml-security-c17 libxml2 libxslt1.1 liblog4cxx10 libzbar0 openssl libcurlpp0 libgtkmm-3.0-1 libnet1 
 apt-get -y -f --quiet install 
 apt-get --no-install-recommends -y --quiet install saes-cpp-framework-lib election-base election-control-panel election-philippines 
-apt-get -y -f --quiet install'
+apt-get -y -f --quiet install
+apt-get --install-recommends -y --quiet install linux-image-generic linux-firmware linux-tools-generic
+'
 
+sync
+umount -l ${BOOTSTRAP_ROOTFS}/proc/
+umount -l ${BOOTSTRAP_ROOTFS}/sys/
+umount -l ${BOOTSTRAP_ROOTFS}/dev/
+sync
+umount -l ${BOOTSTRAP_ROOTFS}
 
-umount ${BOOTSTRAP_ROOTFS}/proc/
-umount ${BOOTSTRAP_ROOTFS}/sys/
-umount ${BOOTSTRAP_ROOTFS}/dev/
-umount ${BOOTSTRAP_ROOTFS}
+sync
 
-sudo fsarchiver savefs -j4 -z9  $DEPLOY_IMAGE /dev/loop0
+fsarchiver savefs -j4 -z9  $DEPLOY_IMAGE /dev/loop0
 
 losetup -D
 
