@@ -109,12 +109,15 @@ cd /dev
 MAKEDEV generic
 
 apt-get -y update 
-apt-get --no-install-recommends -y --quiet install grub2 lxpanel openbox xinit xserver-xorg xserver-xorg-input-all xserver-xorg udevil
-apt-get --no-install-recommends -y --quiet install  cups-filters feh libcupsimage2  netplug ppp udevil usb-modeswitch usbutils gsoap libcos4-1 libcups2 libglib2.0-0 libomniorb4-1 libowcapi-2.8-15 libpng12-0 libsdl2-mixer-2.0-0 libsigc++-2.0-0c2a libudev1 libusb-1.0-0 libuuid1 libwebkit2gtk-3.0-25 libxerces-c3.1 libxml-security-c17 libxml2 libxslt1.1 liblog4cxx10 libzbar0 openssl libcurlpp0 libgtkmm-3.0-1 libnet1 
+apt-get --no-install-recommends -y --quiet install grub2 lxpanel openbox xinit xserver-xorg-core xserver-xorg-input-evdev xserver-xorg-video-dummy isc-dhcp-client udevil
+apt-get --no-install-recommends -y --quiet install cups-filters feh libcupsimage2  netplug ppp udevil usb-modeswitch usbutils gsoap libcos4-1 libcups2 libglib2.0-0 libomniorb4-1 libowcapi-2.8-15 libpng12-0 libsdl2-mixer-2.0-0 libsigc++-2.0-0c2a libudev1 libusb-1.0-0 libuuid1 libwebkit2gtk-3.0-25 libxerces-c3.1 libxml-security-c17 libxml2 libxslt1.1 liblog4cxx10 libzbar0 openssl libcurlpp0 libgtkmm-3.0-1 libnet1 
+apt-get --no-install-recommends -y --quiet install cups-client tree rsyslog
 apt-get -y -f --quiet install 
-apt-get --no-install-recommends -y --quiet install saes-cpp-framework-lib election-base election-control-panel election-philippines 
+apt-get --no-install-recommends -y --quiet install saes-cpp-framework-lib election-base election-control-panel election-philippines election-diagnostic
 apt-get -y -f --quiet install
 apt-get --install-recommends -y --quiet install linux-image-generic linux-firmware linux-tools-generic
+
+rm /etc/apt/apt.conf.d/02Proxy
 '
 
 sync
