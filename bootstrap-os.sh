@@ -6,6 +6,8 @@ ROOTFSBUILD_DIRECTORY="/tmp/os-images/debootstrap/builds"
 MODEL="3377"
 VERSION="PROTOTYPE"
 ARCH="i386"
+LOOPDEV=/dev/loop0
+IMAGE_FILE=$(mktemp -t IMAGE-XXXX)
 #KERNEL_SOURCES="/srv/os-resources/sources/linux-fslc-a3-arm-volar112-wandboard"
 
 if [[ ! -d ${ROOTFSBUILD_DIRECTORY}/${BOOTSTRAP_BASEDIR} ]]; then
@@ -20,13 +22,12 @@ ln -sf ${BOOTSTRAP_ROOTFS_REAL} ${BOOTSTRAP_ROOTFS}
 DEPLOY_IMAGE=${ROOTFSBUILD_DIRECTORY}/${BOOTSTRAP_BASEDIR}/${MODEL}-${VERSION}-image-${BOOTSTRAP_DATEPART}.fsa
 DEPLOY_SCRIPT=${ROOTFSBUILD_DIRECTORY}/${BOOTSTRAP_BASEDIR}/prepare-image-media-model-version-${BOOTSTRAP_DATEPART}.sh
 
-umount -l /dev/loop0
-losetup -D
+umount -l ${LOOPDEV}
 
-dd if=/dev/zero of=/tmp/tempfs.img bs=1M count=2000
-losetup -f /tmp/tempfs.img
-mkfs.ext3 /dev/loop0 
-mount -t ext3 -o defaults,noatime /dev/loop0 ${BOOTSTRAP_ROOTFS}
+dd if=/dev/zero of=${IMAGE_FILE} bs=1M count=2000
+losetup -f ${IMAGE_FILE}
+mkfs -t ext3 -F ${LOOPDEV} -L rootfs 
+mount -t ext3 -o noatime ${LOOPDEV} ${BOOTSTRAP_ROOTFS}
 
 
 echo "Building everything on ${BOOTSTRAP_ROOTFS_REAL}"
@@ -113,7 +114,7 @@ apt-get --no-install-recommends -y --quiet install grub2 lxpanel openbox xinit x
 apt-get --no-install-recommends -y --quiet install cups-filters feh libcupsimage2  netplug ppp udevil usb-modeswitch usbutils gsoap libcos4-1 libcups2 libglib2.0-0 libomniorb4-1 libowcapi-2.8-15 libpng12-0 libsdl2-mixer-2.0-0 libsigc++-2.0-0c2a libudev1 libusb-1.0-0 libuuid1 libwebkit2gtk-3.0-25 libxerces-c3.1 libxml-security-c17 libxml2 libxslt1.1 liblog4cxx10 libzbar0 openssl libcurlpp0 libgtkmm-3.0-1 libnet1 
 apt-get --no-install-recommends -y --quiet install cups-client tree rsyslog
 apt-get -y -f --quiet install 
-apt-get --no-install-recommends -y --quiet install saes-cpp-framework-lib election-base election-control-panel election-philippines election-diagnostic
+apt-get --no-install-recommends -y --quiet install saes-cpp-framework-lib election-base election-control-panel election-philippines election-diagnostic-tool
 apt-get -y -f --quiet install
 apt-get --install-recommends -y --quiet install linux-image-generic linux-firmware linux-tools-generic
 
@@ -125,13 +126,16 @@ umount -l ${BOOTSTRAP_ROOTFS}/proc/
 umount -l ${BOOTSTRAP_ROOTFS}/sys/
 umount -l ${BOOTSTRAP_ROOTFS}/dev/
 sync
-umount -l ${BOOTSTRAP_ROOTFS}
+
+#umount -l ${BOOTSTRAP_ROOTFS}
 
 sync
 
-fsarchiver savefs -j4 -z9  $DEPLOY_IMAGE /dev/loop0
+fsarchiver savefs -a -A -j4 -z9  ${DEPLOY_IMAGE} ${LOOPDEV}
 
-losetup -D
+cp ${DEPLOY_IMAGE} .
+
+losetup -d ${LOOPDEV}
 
 echo "Your system is ready, you can find it in \n\t${BOOTSTRAP_ROOTFS_REAL}\nand the image files are found under \n\t${DEPLOY_IMAGE}"
 
