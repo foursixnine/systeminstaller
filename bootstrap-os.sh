@@ -29,7 +29,7 @@ VERSION="PROTOTYPE"
 ARCH="i386"
 
 #KERNEL_SOURCES="/srv/os-resources/sources/linux-fslc-a3-arm-volar112-wandboard"
-
+44
 if [[ ! -d ${ROOTFSBUILD_DIRECTORY}/${BOOTSTRAP_BASEDIR} ]]; then
 	mkdir -p ${ROOTFSBUILD_DIRECTORY}/${BOOTSTRAP_BASEDIR}
 fi;
